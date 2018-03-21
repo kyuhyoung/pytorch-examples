@@ -6,11 +6,12 @@ class RectifiedLinearUnit(torch.autograd.Function):
     def forward(self, input):
         self.save_for_backward(input)
         return input.clamp(min = 0)
-    def backward(self, grad_output):
+    def backward(self, d_loss_over_d_output):
         saved_input, = self.saved_tensors
-        grad_input = grad_output.clone()
-        grad_input[saved_input < 0] = 0
-        return grad_input
+        # clone, since d_output_over_d_input for ReLU is one for non-negative part of input and zero for the negative part of input.
+        d_loss_over_d_input = d_loss_over_d_output.clone()
+        d_loss_over_d_input[saved_input < 0] = 0
+        return d_loss_over_d_input
 
 
 N, D_in, H, D_out = 64, 1000, 100, 10
