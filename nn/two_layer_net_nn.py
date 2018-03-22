@@ -61,3 +61,5 @@ for t in range(500):
   # we can access its data and gradients like we did before.
   for param in model.parameters():
     param.data -= learning_rate * param.grad.data
+
+dummy = 0
